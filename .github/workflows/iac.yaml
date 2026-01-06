@@ -68,7 +68,10 @@ jobs:
 
       # 4️⃣ Terraform Init
       - name: Terraform Init
-        run: terraform init
+        run: |
+          cd iac
+          ls -la
+          terraform init
 
       # 5️⃣ Terraform Validate
       - name: Terraform Validate
@@ -80,7 +83,7 @@ jobs:
           ls -la
           terraform plan
 
-      # 7️⃣ Terraform Apply
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve tfplan
+      # # 7️⃣ Terraform Apply
+      # - name: Terraform Apply
+      #   if: github.ref == 'refs/heads/main'
+      #   run: terraform apply -auto-approve tfplan
