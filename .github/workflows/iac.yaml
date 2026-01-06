@@ -7,7 +7,7 @@ on:
   #     - "**/*.tf"
   #     - "envs/**"
   # workflow_dispatch:
-  
+
 
 permissions:
   id-token: write
@@ -38,7 +38,7 @@ jobs:
       - name: Configure AWS credentials using OIDC
         run: |
           ROLE_ARN="arn:aws:iam::625062085546:role/github-actions-role"
-          
+                    
           CREDS=$(aws sts assume-role-with-web-identity \
             --role-arn "$ROLE_ARN" \
             --role-session-name "github-actions" \
