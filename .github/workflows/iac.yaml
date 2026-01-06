@@ -77,9 +77,8 @@ jobs:
       # 6️⃣ Terraform Plan
       - name: Terraform Plan
         run: |
-          terraform plan \
-            -var-file=env/prod/terraform.tfvars \
-            -out=tfplan
+          ls -la
+          terraform plan
 
       # 7️⃣ Terraform Apply
       - name: Terraform Apply
