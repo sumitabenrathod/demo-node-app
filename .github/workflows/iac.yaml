@@ -7,6 +7,7 @@ on:
   #     - "**/*.tf"
   #     - "envs/**"
   # workflow_dispatch:
+  
 
 permissions:
   id-token: write
