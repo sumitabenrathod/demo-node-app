@@ -34,15 +34,28 @@ jobs:
           sudo mv terraform /usr/local/bin/
           terraform version
 
-      # 3️⃣ Configure AWS using native GitHub OIDC
-      - name: Configure AWS credentials using OIDC
+      - name: Configure AWS credentials using GitHub OIDC
+        env:
+          ROLE_ARN: arn:aws:iam::625062085546:role/github-actions-role
         run: |
-          ROLE_ARN="arn:aws:iam::625062085546:role/github-actions-role"
-                    
+          echo "Requesting GitHub OIDC token..."
+
+          ID_TOKEN=$(curl -sSL \
+            -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com" \
+            | jq -r '.value')
+
+          if [ -z "$ID_TOKEN" ] || [ "$ID_TOKEN" = "null" ]; then
+            echo "Failed to retrieve OIDC token"
+            exit 1
+          fi
+
+          echo "Assuming AWS role..."
+
           CREDS=$(aws sts assume-role-with-web-identity \
             --role-arn "$ROLE_ARN" \
             --role-session-name "github-actions" \
-            --web-identity-token "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            --web-identity-token "$ID_TOKEN" \
             --duration-seconds 3600 \
             --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' \
             --output text)
@@ -51,7 +64,7 @@ jobs:
           export AWS_SECRET_ACCESS_KEY=$(echo $CREDS | awk '{print $2}')
           export AWS_SESSION_TOKEN=$(echo $CREDS | awk '{print $3}')
 
-          echo "AWS credentials configured via OIDC"
+          aws sts get-caller-identity
 
       # 4️⃣ Terraform Init
       - name: Terraform Init
