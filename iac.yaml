@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "**/*.tf"
-      - "envs/**"
-  workflow_dispatch:
+  #   paths:
+  #     - "**/*.tf"
+  #     - "envs/**"
+  # workflow_dispatch:
 
 permissions:
   id-token: write
